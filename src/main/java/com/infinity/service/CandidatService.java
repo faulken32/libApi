@@ -260,7 +260,7 @@ public class CandidatService {
         SearchResponse response = client.prepareSearch(elasticClientConf.getINDEX_NAME())
                 .setTypes("candidat")
                 .setQuery(qb)
-                .setFrom(0).setSize(10000).setExplain(true)
+                .setFrom(0).setSize(10000000).setExplain(true)
                 .execute()
                 .actionGet();
 
