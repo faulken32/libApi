@@ -172,12 +172,15 @@ public class ExpService {
         TermsBuilder subAggregation = AggregationBuilders.terms("by_country").field("tecnoList")
                 .subAggregation(AggregationBuilders.sum("by_year")
                         .field("duration")
+                        
+                        
                 );
 
         SearchResponse actionGet = client.prepareSearch(elasticClientConf.getINDEX_NAME())
                 .setTypes("exp")
                 .setQuery(qb)
-                .addAggregation(subAggregation)
+              
+                .addAggregation(subAggregation.size(30))
                 .execute()
                 .actionGet();
 

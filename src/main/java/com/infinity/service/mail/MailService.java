@@ -10,7 +10,6 @@ import com.infinity.service.abstractService.AbstractService;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -28,28 +27,30 @@ import org.springframework.stereotype.Service;
 public class MailService extends AbstractService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MailService.class);
+    private static final Logger LOG_MAIL = LoggerFactory.getLogger("MAIL");
     private Session session;
     private MimeMessage message;
     private String dest;
     private String contends;
     private String subject;
 
-   
-   
     
-   
 
     public void send(final String dest, final String contends, final String subject) {
 
         this.dest = dest;
         this.contends = contends;
         this.subject = subject;
-        this.setProps();
-
+        this.setProps();             
+        
         try {
             Transport.send(message);
+            LOG_MAIL.info("mail send to : " + dest);
+            
+            
         } catch (MessagingException ex) {
             LOG.error(ex.getMessage());
+          
         }
 
     }
@@ -58,23 +59,19 @@ public class MailService extends AbstractService {
 
         Properties props = new Properties();
 
-        props.put("mail.smtp.host", "smtp.phpnet.org");
-        props.put("mail.smtp.user", "contact@infinity-web.fr");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "8025");
-        props.setProperty("mail.from", "contact@infinity-web.fr"); // @ expediteur
+        props.put("mail.smtp.host", "127.0.0.1");
+//        props.put("mail.smtp.user", "root");
+//        props.put("mail.smtp.auth", "false");
+//        props.put("mail.smtp.port", "25");
+        props.setProperty("mail.from", "cerebros@cerebros-jobs.com"); // @ expediteur
 
-        session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("contact@infinity-web.fr", "kanekane32");
-                    }
-                });
-        try {
+        session = Session.getInstance(props);
+        
+        
+         try {
             message = new MimeMessage(session);
 
-            message.setFrom(new InternetAddress("contact@infinity-web.fr"));
+            message.setFrom(new InternetAddress("cerebros@cerebros-jobs.com"));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(this.dest));
 
@@ -84,6 +81,7 @@ public class MailService extends AbstractService {
         } catch (MessagingException ex) {
             LOG.error(ex.getMessage());
         }
+        
     }
     
     
